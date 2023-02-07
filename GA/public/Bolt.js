@@ -3,6 +3,7 @@ Color Brightness
 Get sorted
 Gene Mixing
 Random Mutation 
+
 Radius change based on score
 color cahange based on genes
 add age to the gene how man episode/steps

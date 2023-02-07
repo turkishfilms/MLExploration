@@ -1,5 +1,6 @@
 /**
- * implement step counter for episode
+ * TODONE
+ * TODONE implement step counter for episode
  * sorting bolts
  * doing mixing
  * setup next episode
@@ -40,14 +41,14 @@ const newEpisodeStuff = () => {
     bolts.forEach(bolt => bolt.scoring())
     const sortedBolts = sortBolts(bolts)
     champions.push({ "episode": episodeCounter, "genes": sortedBolts[0].genes })
-    const elites = sortedBolts.splice(numBolts/2)
+    const elites = sortedBolts.splice(numBolts / 2)
     const newBolts = geneMixing(elites)
     elites.forEach(elite => newBolts.push(new Bolt({ genes: elite.genes })))
     // bolts = []
     bolts = newBolts
-    console.log(elites[0].score)
+    // console.log(elites[0].score)
     stepCounter = 0
-episodeCounter++
+    episodeCounter++
 }
 
 const sortBolts = (a) => {
@@ -80,4 +81,3 @@ function draw() {
         newEpisodeStuff()
     }
 }
-
