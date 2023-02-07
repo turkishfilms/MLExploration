@@ -12,45 +12,49 @@
 
 
 const GENERANRANGE = 5,
-    STARTINGLINE = 20,
+    STARTINGLINE = 333,
     STARTINGRADIUS = 10,
     STARTINGSCORE = 0,
     BRIGHTNESS = 125,
     NUMEDITABLEGENES = 4
 
 let width, height, numBolts = 1000,
-    stepSize = 5,
+    stepSize = 0.05,
     bolts = [],
     champions = [],
     episodeCounter = 0,
-    episodeLength = 1000,
+    episodeLength = 150,
     stepCounter = 0
 
 function setup() {
-    width = width
-    height = height
+    width = windowWidth
+    height = windowHeight
     createCanvas(width, height);
+    noStroke()
     background(0)
     for (let i = 0; i < numBolts; i++) bolts.push(new Bolt())
-
 
 }
 
 const newEpisodeStuff = () => {
     bolts.forEach(bolt => bolt.scoring())
-    const sortedBolts = sortBolts()
+    const sortedBolts = sortBolts(bolts)
     champions.push({ "episode": episodeCounter, "genes": sortedBolts[0].genes })
-    const elites = sortedBolts.slice(50)
+    const elites = sortedBolts.splice(numBolts/2)
     const newBolts = geneMixing(elites)
     elites.forEach(elite => newBolts.push(new Bolt({ genes: elite.genes })))
+    // bolts = []
     bolts = newBolts
-
+    console.log(elites[0].score)
+    stepCounter = 0
+episodeCounter++
 }
 
 const sortBolts = (a) => {
-    bolts.sort((a, b) => {
+    a.sort((a, b) => {
         return a.score - b.score;
     });
+    return a
 }
 
 const geneMixing = (bolts) => {
@@ -58,7 +62,7 @@ const geneMixing = (bolts) => {
     const boltsL = bolts.length,
         mixedBolts = []
     bolts.forEach(bolt => {
-        mixedBolts.push(new Guy({ genes: bolt.geneMix(bolts[floor(random(boltsL))]) }))
+        mixedBolts.push(new Bolt({ genes: bolt.geneMix(bolts[floor(random(boltsL))]) }))
     })
     return mixedBolts
     // return an array of n mixed up and mutated bolts
@@ -76,3 +80,4 @@ function draw() {
         newEpisodeStuff()
     }
 }
+
