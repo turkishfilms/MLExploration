@@ -20,12 +20,12 @@ const GENERANRANGE = 5,
     NUMEDITABLEGENES = 4
 
 let width, height, numBolts = 1000,
-    stepSize = 0.05,
     bolts = [],
     champions = [],
     episodeCounter = 0,
     episodeLength = 150,
-    stepCounter = 0
+    stepCounter = 0,
+    sim
 
 function setup() {
     width = windowWidth

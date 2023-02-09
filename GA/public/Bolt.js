@@ -1,42 +1,49 @@
-/**
-Color Brightness
-Get sorted
-Gene Mixing
-Random Mutation 
+/*
+*TODONE Color Brightness
+*TODONE Get sorted
+*TODONE Gene Mixing
+*TODONE Random Mutation 
 
-Radius change based on score
-color cahange based on genes
-add age to the gene how man episode/steps
-add apisode count on initiation birthday 
+TODO: Radius change based on score
+TODO: color cahange based on genes
+TODO: add age to the gene how man episode/steps
+TODO: add apisode count on initiation birthday 
  */
 
-
+/**Creates a Bolt
+ * @class
+ * @classdesc Bolt - Object used as agent for Genetic Algorithm 
+ * 
+ * @function move - Moves Bolt in 2d space
+ * @function scoring - Calculates Bolts score and updates Bolt.score
+ * @function geneMix 
+ * @function mutate - Takes a Gene and modifes it
+ * @function show - Draws Bolt on screen  
+ * 
+ * 
+ * 
+ */
 class Bolt {
     constructor({
         x = random(width),
         y = height - STARTINGLINE,
-        genes = {
-            "up": random(GENERANRANGE),
-            "right": random(GENERANRANGE),
-            "down": random(GENERANRANGE),
-            "left": random(GENERANRANGE),
-            "color": [random(255 - BRIGHTNESS),
-                random(255 - BRIGHTNESS),
-                random(255 - BRIGHTNESS)
-            ],
-            "radius": STARTINGRADIUS
-        },
+        genes = new Gene(),
         score = STARTINGSCORE
     } = {}) {
         this.x = x
         this.y = y
         this.genes = genes
         this.score = score
+        this.speedDamp = 0.05
     }
 
+    step(){
+        this.move()
+        this.show()
+    }
     move() {
-        this.y += (this.genes.up - this.genes.down) * stepSize
-        this.x += (this.genes.right - this.genes.left) * stepSize
+        this.y += (this.genes.up - this.genes.down) * this.speedDamp
+        this.x += (this.genes.right - this.genes.left) * this.speedDamp
     }
 
     scoring() {
@@ -44,9 +51,8 @@ class Bolt {
     }
 
     /**
-     * 
-     * @param { Bolt } bolt 
-     * An object of type {Bolt}. The Bolt to have this Bolts genes mixed with.
+     * @function 
+     * @param { Bolt } - The Bolt to have this Bolts Gene mixed with.
      * 
      * The chosenGenes array holds the results of NUMEDITABLEGENES number of 
      * coin flips
@@ -58,7 +64,7 @@ class Bolt {
      * 
      * The newGene object collects the mutated genes into the proper gene format.
      * 
-     * @returns new mixed and mutated gene in gene format
+     * @returns {Gene} - New mixed and mutated Gene 
      */
     geneMix(bolt) {
         const chosenGenes = []
@@ -72,14 +78,14 @@ class Bolt {
             chosenGenes[3] ? this.genes.left : bolt.genes.left,
         ]
         const mutatedGenes = this.mutate(newGenesArr)
-        const newGene = {
+        const newGene = new Gene({
             up: mutatedGenes[0],
             right: mutatedGenes[1],
             down: mutatedGenes[2],
             left: mutatedGenes[3],
             color: [random(255), random(255), random(255)],
             radius: STARTINGRADIUS
-        }
+        })
         return newGene
     }
 
