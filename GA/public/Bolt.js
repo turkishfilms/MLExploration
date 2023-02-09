@@ -34,7 +34,7 @@ class Bolt {
         this.y = y
         this.genes = genes
         this.score = score
-        this.speedDamp = 0.05
+        this.speedDamp = 0.09
     }
 
     step(){

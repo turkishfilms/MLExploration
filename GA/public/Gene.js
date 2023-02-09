@@ -2,10 +2,14 @@
  * Creates a new Gene
  * @class Gene
  * @classdesc Holds the proper formatting for Genes 
- * @param {Number} [up]  - How far Bolt will move up, used in Bolt.move() and Bolt.geneMix() 
- * @param {Number} [right]  - How far Bolt will move right, used in Bolt.move() and Bolt.geneMix()
- * @param {Number} [down]  - How far Bolt will move down, used in Bolt.move() and Bolt.geneMix()
- * @param {Number} [left]  - How far Bolt will move left, used in Bolt.move() and Bolt.geneMix()
+ * @param {Number} [up]  - How far Bolt will move up, used in Bolt.move() and 
+ *  Bolt.geneMix() 
+ * @param {Number} [right]  - How far Bolt will move right, used in Bolt.move() 
+ *  and Bolt.geneMix()
+ * @param {Number} [down]  - How far Bolt will move down, used in Bolt.move() 
+ *  and Bolt.geneMix()
+ * @param {Number} [left]  - How far Bolt will move left, used in Bolt.move() 
+ *  and Bolt.geneMix()
  * @param {Array} [color]  - The RGB values of the Bolt, used in Bolt.show()
  * @param {Number} [radius]  - The radius of the Bolt drawn, used in Bolt.show()
  * 

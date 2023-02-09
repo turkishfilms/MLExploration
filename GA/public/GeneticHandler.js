@@ -3,19 +3,30 @@
  * @class
  * @classdesc A Handler for various Genetic Algorithms
  * 
- * @param 
+ * @param { Number } popSize - Size of population of Genes.
+ * @param { Number } episodeLength -  How many steps per episode.
+ * @param { Number } epochLength - How many episodes per epoch.
  * @param
- * @param
- * @param
+ * Potentially User Supplied
  * 
+ * Gene Prototype X
+ * Selection Function
+ * Scoring Function
+ * Gene mixing function
+ * Finale function
  */
 
 class GeneticHandler {
     constructor({
         popSize = 0,
-        geneType = Gene,
+        geneType,
+        hull,
         episodeLength = 0,
         epochLength = 0,
+        selectionFx,
+        scoringFx,
+        geneMixingFx,
+        finaleFx,
     } = {}) {
         this.popSize = popSize
         this.geneType = geneType
@@ -23,10 +34,22 @@ class GeneticHandler {
         this.epochLength = epochLength
         this.episodeCounter = 0
         this.epochCounter = 0
-        topScorers = []
-        pop = []
-        this.initPop()
+        this.stepCounter = 0
+        this.topScorers = []
+        this.pop = []
+        this.hull = hull
+        this.selectionFx = selectionFx
+        this.scoringFx = scoringFx
+        this.geneMixingFx = geneMixingFx
+        this.finaleFx = finaleFx
+        console.log("Welcome to GASIM1 Where we GAs you up!")
+        this.initPop(hull)
     }
+
+    //     || this.darwin
+    // || this.scoreAgents
+    // || this.geneMixing
+    // || this.finale 
 
     /**
      * Initalizes population (pop)
@@ -34,12 +57,12 @@ class GeneticHandler {
      * 
      */
     initPop = () => {
-        for (let i = 0; i < this.popSize; i++) this.addAgent(new Bolt())
+        for (let i = 0; i < this.popSize; i++) this.addAgent(new this.hull())
     }
 
     /**
      * Accessor for this.pop
-     * @param {typeof geneType} agent The new agent to be added 
+     * @param {geneType} agent The new agent to be added 
      * 
      */
     addAgent = (agent) => this.pop.push(agent)
@@ -49,11 +72,11 @@ class GeneticHandler {
      * Checks for episode conclusion
      */
     step = () => {
-        pop.forEach(agent => agent.step())
+        this.pop.forEach(agent => agent.step())
         this.incrementStepCount()
         if (this.didFinishEpisode()) {
             this.endEpisode()
-            if (this.didFinishEpoch()) this.finale()
+            if (this.didFinishEpoch()) this.finaleFx()
             else this.startEpisode()
         }
     }
@@ -64,6 +87,8 @@ class GeneticHandler {
     incrementEpisodeCount = () => this.episodeCounter++
     setStepCounter = (count) => this.stepCounter = count
     finale = () => console.log("BOOOOOOG")
+    scoreAgents = () => this.pop.forEach(agent => this.scoringFx(agent))
+    setPop = (newPop) => this.pop = newPop
 
     startEpisode = () => {
         this.setStepCounter(0)
@@ -71,33 +96,35 @@ class GeneticHandler {
     }
 
     /**
-     * 
+     * End of episode
      * 
      * @issue survivors can be any assortment including bottom half of pop so that 
      *        means that topScorer may not be top of the batch just top of survivors
      */
     endEpisode = () => {
-        pop.forEach(agent => agent.scoring())
-        const survivors = darwin(pop)
+        this.scoreAgents()
+        // this.scoringFx()
+        const survivors = this.selectionFx(this.pop) //
         const topSurvivor = {
-            "episode": episodeCounter,
+            "episode": this.episodeCounter,
             "genes": survivors[0].genes,
             "score": survivors[0].score
         }
         this.addTopScorer(topSurvivor)
 
-        const nexGeneration = this.geneMixing(survivors)
-        survivors.forEach(elite => newBolts.push(new Bolt({ genes: survivors.genes })))
-        // bolts = []
-        bolts = newBolts
-        // console.log(survivors[0].score)
+        const nexGeneration = this.geneMixingFx(survivors)
 
+        survivors.forEach(agent => {
+            nexGeneration.push(new this.hull({ genes: agent.genes }))
+        })
+
+        // this.setPop([])
+        this.setPop(nexGeneration)
     }
 
     darwin = (pop) => {
         return pop.sort((a, b) => a.score - b.score).splice(this.popSize / 2)
     }
-
 
     /** Adds topScorer to this.topScorers
      * @param {Object} topScorer - The MVP of the last episode.
@@ -107,15 +134,20 @@ class GeneticHandler {
      */
     addTopScorer(topScorer) { this.topScorers.push(topScorer) }
 
-
-    geneMixing = (bolts) => {
-        // take in n bolts
-        const boltsL = bolts.length,
-            mixedBolts = []
-        bolts.forEach(bolt => {
-            mixedBolts.push(new Bolt({ genes: bolt.geneMix(bolts[floor(random(boltsL))]) }))
+    /**
+     * 
+     * @param { Array } pop - A population to be mixed
+     * @returns  { Array } - A mixed population
+     */
+    geneMixing = (pop) => {
+        // take in n pop
+        const mixedAgents = []
+        pop.forEach(agent => {
+            mixedAgents.push(new hull({
+                genes: agent.geneMix(pop[floor(random(pop.length))])
+            }))
         })
-        return mixedBolts
+        return mixedAgents
         // return an array of n mixed up and mutated bolts
     }
 }

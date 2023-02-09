@@ -23,7 +23,7 @@ let width, height, numBolts = 1000,
     bolts = [],
     champions = [],
     episodeCounter = 0,
-    episodeLength = 150,
+    episodeLength = 100,
     stepCounter = 0,
     sim
 
