@@ -80,7 +80,13 @@ class GeneticHandler {
             else this.startEpisode()
         }
     }
-
+/** Adds topScorer to this.topScorers
+     * @param {Object} topScorer - The MVP of the last episode.
+     * @param {Number} topScorer.episode - The episode he championed.
+     * @param {Gene} topScorer.genes - The Gene responsible.
+     * @param {Number} topScorer.score - The high score achieved.
+     */
+    addTopScorer(topScorer) { this.topScorers.push(topScorer) }
     didFinishEpisode = () => this.stepCounter >= this.episodeLength
     didFinishEpoch = () => this.episodeCounter >= this.epochLength
     incrementStepCount = () => this.stepCounter++
@@ -103,7 +109,6 @@ class GeneticHandler {
      */
     endEpisode = () => {
         this.scoreAgents()
-        // this.scoringFx()
         const survivors = this.selectionFx(this.pop) //
         const topSurvivor = {
             "episode": this.episodeCounter,
@@ -111,14 +116,10 @@ class GeneticHandler {
             "score": survivors[0].score
         }
         this.addTopScorer(topSurvivor)
-
         const nexGeneration = this.geneMixingFx(survivors)
-
         survivors.forEach(agent => {
             nexGeneration.push(new this.hull({ genes: agent.genes }))
         })
-
-        // this.setPop([])
         this.setPop(nexGeneration)
     }
 
@@ -126,21 +127,12 @@ class GeneticHandler {
         return pop.sort((a, b) => a.score - b.score).splice(this.popSize / 2)
     }
 
-    /** Adds topScorer to this.topScorers
-     * @param {Object} topScorer - The MVP of the last episode.
-     * @param {Number} topScorer.episode - The episode he championed.
-     * @param {Gene} topScorer.genes - The Gene responsible.
-     * @param {Number} topScorer.score - The high score achieved.
-     */
-    addTopScorer(topScorer) { this.topScorers.push(topScorer) }
-
     /**
      * 
      * @param { Array } pop - A population to be mixed
      * @returns  { Array } - A mixed population
      */
     geneMixing = (pop) => {
-        // take in n pop
         const mixedAgents = []
         pop.forEach(agent => {
             mixedAgents.push(new hull({
@@ -148,6 +140,5 @@ class GeneticHandler {
             }))
         })
         return mixedAgents
-        // return an array of n mixed up and mutated bolts
     }
 }
