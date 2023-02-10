@@ -15,7 +15,7 @@
  * 
  * @author Reginald Robinson <ddrbnsn@gmail.com> 
  */
-class Gene {
+class simpleBoltGene {
     constructor({
         up = random(GENERANRANGE),
         right = random(GENERANRANGE),

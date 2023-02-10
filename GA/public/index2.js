@@ -29,13 +29,14 @@ function setup() {
         popSize: 1000,
         episodeLength: 120,
         epochLength: 1000,
-        geneType: Gene,
+        geneType: simpleBoltGene,
         hull: Bolt,
         selectionFx: topHalf,
         finaleFx: finfin,
         scoringFx: scoringMe,
         geneMixingFx: geneMixer,
     })
+    // simBolt = new gh2({})
 }
 
 const topHalf = (pop) => {
@@ -60,3 +61,5 @@ function draw() {
     // background(0)
     sim.step()
 }
+
+
