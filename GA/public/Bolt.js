@@ -28,12 +28,11 @@ class Bolt {
         x = random(width),
         y = height - STARTINGLINE,
         genes = new Gene(),
-        score = STARTINGSCORE
     } = {}) {
         this.x = x
         this.y = y
         this.genes = genes
-        this.score = score
+        this.score = 0
         this.speedDamp = 0.09
     }
 
@@ -42,12 +41,8 @@ class Bolt {
         this.show()
     }
     move() {
-        this.y += (this.genes.up - this.genes.down) * this.speedDamp
+        this.y += -(this.genes.up - this.genes.down) * this.speedDamp
         this.x += (this.genes.right - this.genes.left) * this.speedDamp
-    }
-
-    scoring() {
-        this.score = this.y
     }
 
     /**
