@@ -9,4 +9,4 @@ clearly written api
 in code someone writes gene, body, env, fxs, and config
 and bam it runs and optimzes usinf GA
 
-Segregate duties and mind pricnciples
+Segregate duties and mind pricnciples 
