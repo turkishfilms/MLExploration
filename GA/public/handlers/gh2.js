@@ -103,7 +103,7 @@ class GeneticHandler {
         this.incrementEpisodeCount()
     }
 
-    /**
+/**
      * End of episode
      * 
      * @issue survivors can be any assortment including bottom half of pop so that 

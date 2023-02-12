@@ -17,7 +17,7 @@ const GENERANRANGE = 5,
     BRIGHTNESS = 125,
     NUMEDITABLEGENES = 4
 
-let width, height, sim
+let width, height, sim,sim2
 
 function setup() {
     width = windowWidth
@@ -26,11 +26,22 @@ function setup() {
     noStroke()
     background(0)
     sim = new GeneticHandler({
-        popSize: 1000,
+        popSize: 10,
         episodeLength: 120,
         epochLength: 1000,
         geneType: simpleBoltGene,
         hull: Bolt,
+        selectionFx: topHalf,
+        finaleFx: finfin,
+        scoringFx: scoringMe,
+        geneMixingFx: geneMixer,
+    })
+    sim2 = new GeneticHandler({
+        popSize: 1000,
+        episodeLength: 120,
+        epochLength: 1000,
+        geneType: cyclicBoltGene,
+        hull: CyclicBolt,
         selectionFx: topHalf,
         finaleFx: finfin,
         scoringFx: scoringMe,
@@ -59,7 +70,7 @@ const scoringMe = (agent) => agent.score = agent.y
 
 function draw() {
     // background(0)
-    sim.step()
+    sim2.step()
 }
 
 

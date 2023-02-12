@@ -27,7 +27,7 @@ class Bolt {
     constructor({
         x = random(width),
         y = height - STARTINGLINE,
-        genes = new Gene(),
+        genes = new simpleBoltGene(),
     } = {}) {
         this.x = x
         this.y = y
