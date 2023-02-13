@@ -1,4 +1,4 @@
-/**
+/**stepCount
  * TODONE
  * TODONE implement step counter for episode
  * sorting bolts
@@ -37,15 +37,15 @@ function setup() {
 const simthree = (con) => {
 
     sim3 = new GeneticHandler({
-        popSize: 100,
+        popSize: 300,
         episodeLength: 100,
-        epochLength: 100,
-        geneType: VectorBoltChromosome,
+        epochLength: 10000,
+        chromosomeType: VectorBoltChromosome,
         hull: VectorBolt,
         selectionFx: con.selection,
         finaleFx: con.finale,
         scoringFx: con.scoring,
-        geneMixingFx: con.genemix,
+        chromosomeMixingFx: con.chromosomemix,
     })
 }
 
@@ -55,16 +55,28 @@ const configVecc = () => {
     const mut = (vChromosome) => {
         for (const gene in vChromosome) {
             if (random() <= 1 / Object.keys(vChromosome).length) {
-                vChromosome[gene] += random()
+                vChromosome[gene] += random(-1,1)
             }
         }
     }
 
-    const geneMixer = (pop) => {
+/**Mutates a chrom
+ * @function
+ * @description Mutates one gene in a chromosome
+ */
+const mut2 = (vChromosome) =>{
+    const chromLen = Object.keys(vChromosome).length
+    const gNumber = floor(random(chromLen))
+    const gene = Object.keys(vChromosome)[gNumber]
+    vChromosome[gene] += random(-1,1)
+    return vChromosome
+}
+
+    const chromosomeMixer = (pop) => {
         const mixedAgents = []
         pop.forEach(agent => {
             mixedAgents.push(new VectorBolt({
-                genes: mut(agent.chromosomeMix(pop[floor(random(pop.length))]))
+                chromosome: mut2(agent.chromosomeMix(pop[floor(random(pop.length))]))
             }))
         })
         return mixedAgents
@@ -75,17 +87,17 @@ const configVecc = () => {
  * @param {Number} p - the reciprocal of the ratio of selction size (eg 1/2 -> p = 2)
 */
 const selectionP = (p) =>{
-    return pop.sort((b, a) => a.score - b.score)
+    return pop.sort((a,b) => a.score - b.score)
                 .splice(0, floor(pop.length / p))
 }
 
     return {
         selection: (pop) => {
-            return pop.sort((b, a) => a.score - b.score)
+            return pop.sort((b,a) => a.score - b.score)
                 .splice(0, floor(pop.length / 2))
         },
         finale: () => console.log("BOOOOOOG"),
-        genemix: geneMixer,
+        chromosomemix: chromosomeMixer,
         scoring: (agent) => agent.score = -agent.y
     }
 }
@@ -101,12 +113,12 @@ const simtwo = () => {
         popSize: 1000,
         episodeLength: 120,
         epochLength: 1000,
-        geneType: simpleBoltGene,
+        chromosomeType: simpleBoltChromosome,
         hull: CyclicBolt,
         selectionFx: con.selection,
         finaleFx: con.finale,
         scoringFx: con.scoring,
-        geneMixingFx: con.genemix,
+        chromosomeMixingFx: con.chromosomemix,
     })
 }
 
@@ -115,12 +127,12 @@ const simone = () => {
         popSize: 10,
         episodeLength: 120,
         epochLength: 1000,
-        geneType: simpleBoltGene,
+        chromosomeType: simpleBoltChromosome,
         hull: Bolt,
         selectionFx: topHalf,
         finaleFx: finfin,
         scoringFx: scoringMe,
-        geneMixingFx: geneMixer,
+        chromosomeMixingFx: chromosomeMixer,
     })
 }
 
@@ -132,11 +144,11 @@ const config = () => {
 
     const finfin = () => console.log("BOOOOOOG")
 
-    const geneMixer = (pop) => {
+    const chromosomeMixer = (pop) => {
         const mixedAgents = []
         pop.forEach(agent => {
             mixedAgents.push(new CyclicBolt({
-                genes: agent.geneMix(pop[floor(random(pop.length))])
+                chromosome: agent.chromosomeMix(pop[floor(random(pop.length))])
             }))
         })
         return mixedAgents
@@ -147,7 +159,7 @@ const config = () => {
     return {
         selection: topHalf,
         finale: finfin,
-        genemix: geneMixer,
+        chromosomemix: chromosomeMixer,
         scoring: scoringMe
     }
 }
@@ -165,17 +177,17 @@ const vectorBoltStuff = () => {
             this.y = sin(angle) * speed
         },
         show: () => {
-            fill(gene.color[0], )
-            ellipse(x, y, gene.r)
+            fill(chromosome.color[0], )
+            ellipse(x, y, chromosome.r)
         },
         updateAng: () => {
             if (angIsInc) this.angle += angDelta
             else angle -= angDelta
-            if (ang >= gene.angmax || ang <= gene.angmin) angIsInc *= -1
+            if (ang >= chromosome.angmax || ang <= chromosome.angmin) angIsInc *= -1
         },
-        geneMix: (vecbol) => {
+        chromosomeMix: (vecbol) => {
             const avg = (a, b) => (a + b) / 2
-            return new vecBoltGene({
+            return new vecBoltChromosome({
                 angMin: avg(angmin, vecbol.angmin),
                 angMax: avg(angMax, vecbol.angmax),
                 angdelta: avg(angdelta, vecbol.angdelta),
@@ -183,7 +195,7 @@ const vectorBoltStuff = () => {
         }
     }
 
-    const gene = {
+    const chromosome = {
         movement: {
             angMin: 0,
             angMax: 0,
@@ -195,10 +207,10 @@ const vectorBoltStuff = () => {
         }
     }
     const scoringFx = () => {}
-    const geneMixingFx = () => {}
+    const chromosomeMixingFx = () => {}
     const selectionFx = (pop) => {
         return pop.sort((b, a) => a.score - b.score).splice(0, floor(pop.length / 2))
     }
     const finaleFx = () => console.log("BOOOOOOG")
-    return { scoringFx, finaleFx, selectionFx, geneMixingFx }
+    return { scoringFx, finaleFx, selectionFx, chromosomeMixingFx }
 }

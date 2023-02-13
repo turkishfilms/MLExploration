@@ -3,13 +3,13 @@
  * @classdesc a boltthat move only in one direction per step and cycles through 
  *  directions
  * 
- * @function move - Cyclically moves according to genes direction 
+ * @function move - Cyclically moves according to chromosomes direction 
  */
 class CyclicBolt extends Bolt {
-    constructor({ genes = new simpleBoltGene(), stepSize = 0.5 } = {}) {
+    constructor({ chromosome = new simpleBoltChromosome(), stepSize = 0.5 } = {}) {
         super({
-            genes: genes,
-            geneType: simpleBoltGene,
+            chromosome: chromosome,
+            chromosomeType: simpleBoltChromosome,
             speedDamp: stepSize
         })
         this.direction = floor(random(5))
@@ -23,16 +23,16 @@ class CyclicBolt extends Bolt {
     move(dir = 0) {
         switch (this.direction) {
             case 0:
-                this.y += this.genes.up
+                this.y += this.chromosome.up
                 break;
             case 1:
-                this.x += this.genes.right
+                this.x += this.chromosome.right
                 break;
             case 2:
-                this.y += this.genes.down
+                this.y += this.chromosome.down
                 break;
             case 3:
-                this.x += this.genes.left
+                this.x += this.chromosome.left
                 break;
         }
         this.direction = (this.direction + 1) % 4

@@ -5,7 +5,7 @@
 class VectorBolt {
 
     constructor({
-        angle = random(0, TWO_PI),
+        angle = PI + HALF_PI, //up
         speed = 2,
         x = random(width),
         y = height - STARTINGLINE,
