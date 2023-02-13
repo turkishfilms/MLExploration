@@ -6,18 +6,13 @@
  * @function move - Cyclically moves according to genes direction 
  */
 class CyclicBolt extends Bolt {
-    constructor({ options } = {}) {
-        const {
-            x,
-            y,
-            genes = new cyclicBoltGene()
-        } = options
+    constructor({ genes = new simpleBoltGene(), stepSize = 0.5 } = {}) {
         super({
-            x: x,
-            y: y,
-            genes,
-            genes
+            genes: genes,
+            geneType: simpleBoltGene,
+            speedDamp: stepSize
         })
+        this.direction = floor(random(5))
     }
 
     /**Moves bolt according to direction 
@@ -29,16 +24,17 @@ class CyclicBolt extends Bolt {
         switch (this.direction) {
             case 0:
                 this.y += this.genes.up
-                break
+                break;
             case 1:
                 this.x += this.genes.right
-                break
+                break;
             case 2:
                 this.y += this.genes.down
-                break
+                break;
             case 3:
                 this.x += this.genes.left
-                break
+                break;
         }
+        this.direction = (this.direction + 1) % 4
     }
 }

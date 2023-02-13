@@ -17,7 +17,7 @@ const GENERANRANGE = 5,
     BRIGHTNESS = 125,
     NUMEDITABLEGENES = 4
 
-let width, height, sim,sim2
+let width, height, sim, sim2, sim3
 
 function setup() {
     width = windowWidth
@@ -25,6 +25,92 @@ function setup() {
     createCanvas(width, height);
     noStroke()
     background(0)
+    // sim()
+    // const con = config()
+    // sim2()
+
+    simthree(configVecc())
+
+
+}
+
+const simthree = (con) => {
+
+    sim3 = new GeneticHandler({
+        popSize: 100,
+        episodeLength: 100,
+        epochLength: 100,
+        geneType: VectorBoltChromosome,
+        hull: VectorBolt,
+        selectionFx: con.selection,
+        finaleFx: con.finale,
+        scoringFx: con.scoring,
+        geneMixingFx: con.genemix,
+    })
+}
+
+
+const configVecc = () => {
+
+    const mut = (vChromosome) => {
+        for (const gene in vChromosome) {
+            if (random() <= 1 / Object.keys(vChromosome).length) {
+                vChromosome[gene] += random()
+            }
+        }
+    }
+
+    const geneMixer = (pop) => {
+        const mixedAgents = []
+        pop.forEach(agent => {
+            mixedAgents.push(new VectorBolt({
+                genes: mut(agent.chromosomeMix(pop[floor(random(pop.length))]))
+            }))
+        })
+        return mixedAgents
+    }
+/**Selects a percentage of an array 
+ * @function
+ * @description parameterized selection of top people. 
+ * @param {Number} p - the reciprocal of the ratio of selction size (eg 1/2 -> p = 2)
+*/
+const selectionP = (p) =>{
+    return pop.sort((b, a) => a.score - b.score)
+                .splice(0, floor(pop.length / p))
+}
+
+    return {
+        selection: (pop) => {
+            return pop.sort((b, a) => a.score - b.score)
+                .splice(0, floor(pop.length / 2))
+        },
+        finale: () => console.log("BOOOOOOG"),
+        genemix: geneMixer,
+        scoring: (agent) => agent.score = -agent.y
+    }
+}
+
+function draw() {
+    background(0)
+    sim3.step()
+}
+
+
+const simtwo = () => {
+    sim2 = new GeneticHandler({
+        popSize: 1000,
+        episodeLength: 120,
+        epochLength: 1000,
+        geneType: simpleBoltGene,
+        hull: CyclicBolt,
+        selectionFx: con.selection,
+        finaleFx: con.finale,
+        scoringFx: con.scoring,
+        geneMixingFx: con.genemix,
+    })
+}
+
+const simone = () => {
     sim = new GeneticHandler({
         popSize: 10,
         episodeLength: 120,
@@ -36,41 +122,83 @@ function setup() {
         scoringFx: scoringMe,
         geneMixingFx: geneMixer,
     })
-    sim2 = new GeneticHandler({
-        popSize: 1000,
-        episodeLength: 120,
-        epochLength: 1000,
-        geneType: cyclicBoltGene,
-        hull: CyclicBolt,
-        selectionFx: topHalf,
-        finaleFx: finfin,
-        scoringFx: scoringMe,
-        geneMixingFx: geneMixer,
-    })
-    // simBolt = new gh2({})
 }
 
-const topHalf = (pop) => {
-    return pop.sort((b, a) => a.score - b.score).splice(0,floor(pop.length / 2))
+const config = () => {
+    const topHalf = (pop) => {
+        return pop.sort((b, a) => a.score - b.score)
+            .splice(0, floor(pop.length / 2))
+    }
+
+    const finfin = () => console.log("BOOOOOOG")
+
+    const geneMixer = (pop) => {
+        const mixedAgents = []
+        pop.forEach(agent => {
+            mixedAgents.push(new CyclicBolt({
+                genes: agent.geneMix(pop[floor(random(pop.length))])
+            }))
+        })
+        return mixedAgents
+    }
+
+    const scoringMe = (agent) => agent.score = -agent.y
+
+    return {
+        selection: topHalf,
+        finale: finfin,
+        genemix: geneMixer,
+        scoring: scoringMe
+    }
 }
 
-const finfin = () => console.log("BOOOOOOG")
+const vectorBoltStuff = () => {
 
-const geneMixer = (pop) => {
-    const mixedAgents = []
-    pop.forEach(agent => {
-        mixedAgents.push(new Bolt({
-            genes: agent.geneMix(pop[floor(random(pop.length))])
-        }))
-    })
-    return mixedAgents
+    const hull = {
+        angle: 0,
+        speed: 0,
+        x: 0,
+        y: 0,
+        angIsInc: 0,
+        move: () => {
+            this.x = cos(angle) * speed
+            this.y = sin(angle) * speed
+        },
+        show: () => {
+            fill(gene.color[0], )
+            ellipse(x, y, gene.r)
+        },
+        updateAng: () => {
+            if (angIsInc) this.angle += angDelta
+            else angle -= angDelta
+            if (ang >= gene.angmax || ang <= gene.angmin) angIsInc *= -1
+        },
+        geneMix: (vecbol) => {
+            const avg = (a, b) => (a + b) / 2
+            return new vecBoltGene({
+                angMin: avg(angmin, vecbol.angmin),
+                angMax: avg(angMax, vecbol.angmax),
+                angdelta: avg(angdelta, vecbol.angdelta),
+            })
+        }
+    }
+
+    const gene = {
+        movement: {
+            angMin: 0,
+            angMax: 0,
+            angDelta: 0
+        },
+        looks: {
+            radius: 0,
+            color: 0
+        }
+    }
+    const scoringFx = () => {}
+    const geneMixingFx = () => {}
+    const selectionFx = (pop) => {
+        return pop.sort((b, a) => a.score - b.score).splice(0, floor(pop.length / 2))
+    }
+    const finaleFx = () => console.log("BOOOOOOG")
+    return { scoringFx, finaleFx, selectionFx, geneMixingFx }
 }
-
-const scoringMe = (agent) => agent.score = agent.y
-
-function draw() {
-    // background(0)
-    sim2.step()
-}
-
-

@@ -42,6 +42,14 @@ class GeneticHandler {
         this.scoringFx = scoringFx
         this.geneMixingFx = geneMixingFx
         this.finaleFx = finaleFx
+        this.builtInFxs = {
+            scoring: {},
+            selction: {},
+            genemixing: {},
+            finale: {}
+        }
+
+
         console.log("Welcome to GASIM1 Where we GAs you up!")
         this.initPop(hull)
     }
@@ -80,7 +88,7 @@ class GeneticHandler {
             else this.startEpisode()
         }
     }
-/** Adds topScorer to this.topScorers
+    /** Adds topScorer to this.topScorers
      * @param {Object} topScorer - The MVP of the last episode.
      * @param {Number} topScorer.episode - The episode he championed.
      * @param {Gene} topScorer.genes - The Gene responsible.
@@ -112,7 +120,7 @@ class GeneticHandler {
         const survivors = this.selectionFx(this.pop) //
         const topSurvivor = {
             "episode": this.episodeCounter,
-            "genes": survivors[0].genes,
+            "chromosome": survivors[0].genes || survivors[0].chromosome,
             "score": survivors[0].score
         }
         this.addTopScorer(topSurvivor)

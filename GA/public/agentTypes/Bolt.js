@@ -28,12 +28,15 @@ class Bolt {
         x = random(width),
         y = height - STARTINGLINE,
         genes = new simpleBoltGene(),
+        geneType = simpleBoltGene,
+        speedDamp = 0.09,
     } = {}) {
         this.x = x
         this.y = y
         this.genes = genes
+        this.geneType = geneType
         this.score = 0
-        this.speedDamp = 0.09
+        this.speedDamp = speedDamp
     }
 
     step(){
@@ -73,7 +76,7 @@ class Bolt {
             chosenGenes[3] ? this.genes.left : bolt.genes.left,
         ]
         const mutatedGenes = this.mutate(newGenesArr)
-        const newGene = new Gene({
+        const newGene = new this.geneType({
             up: mutatedGenes[0],
             right: mutatedGenes[1],
             down: mutatedGenes[2],
