@@ -27,6 +27,7 @@ class GeneticHandler {
         scoringFx,
         chromosomeMixingFx,
         finaleFx,
+        pop = [],
     } = {}) {
         this.popSize = popSize
         this.chromosomeType = chromosomeType
@@ -36,22 +37,38 @@ class GeneticHandler {
         this.epochCounter = 0
         this.stepCounter = 0
         this.topScorers = []
-        this.pop = []
+        this.pop = pop
         this.hull = hull
-        this.selectionFx = selectionFx
-        this.scoringFx = scoringFx
-        this.chromosomeMixingFx = chromosomeMixingFx
-        this.finaleFx = finaleFx
         this.builtInFxs = {
-            scoring: {},
-            selction: {},
-            chromosomemixing: {},
-            finale: {}
+            scoring: { yValNeg: (agent) => agent.score = -agent.y },
+            selection: {
+                topHalf: (pop) => {
+                    return pop.sort((b, a) => a.score - b.score)
+                        .splice(0, floor(pop.length / 2))
+                },
+            },
+            chromosomeMixing: {
+                oneRandomPairEach: (pop) => {
+                    const mixedAgents = []
+                    pop.forEach(agent => {
+                        mixedAgents.push(new this.hull({
+                            chromosome: agent.chromosomeMix(pop[floor(random(pop.length))])
+                        }))
+                    })
+                    return mixedAgents
+                },
+            },
+            final: { boog: () => console.log("BOOOOOOG"), }
         }
+        this.selectionFx = selectionFx || this.builtInFxs.selection.topHalf /**@issue how will a user access the builtins when making a new instance */
+        this.scoringFx = scoringFx || this.builtInFxs.scoring.yValNeg /**@issue how will a user access the builtins when making a new instance */
+        this.chromosomeMixingFx = chromosomeMixingFx|| this.builtInFxs.chromosomeMixing.oneRandomPairEach /**@issue how will a user access the builtins when making a new instance */
+        this.finaleFx = finaleFx|| this.builtInFxs.final.boog /**@issue how will a user access the builtins when making a new instance */
 
 
         console.log("Welcome to GASIM1 Where we GAs you up!")
-        this.initPop(hull)
+        console.log(pop)
+        if (pop.length < 1) this.initPop(hull)
     }
 
 
@@ -75,10 +92,12 @@ class GeneticHandler {
      * Advances the sim one step
      * Checks for episode conclusion
      */
-    step = () => {
-        this.pop.forEach(agent => agent.step())
+    step = (should) => {
+        this.pop.forEach(agent => agent.step(should))
+        this.scoreAgents()
         this.handleCount()
         this.drawLines()
+        this.displayStats()
     }
 
     handleCount = () => {
@@ -105,8 +124,19 @@ class GeneticHandler {
     }
 
     drawCurrentLeaderLine = () => {
-        const y = this.pop.sort((b, a) => b.y - a.y)[0].y
+        const y = this.pop.sort((a, b) => a.y - b.y)[0].y
         line(0, y, width, y)
+    }
+
+    displayStats = () => {
+        const curHighScore = this.pop.sort((a, b) => a.score - b.score)[0].score
+        let highScore = curHighScore
+        if (this.topScorers.length > 1) highScore = this.topScorers.sort((a, b) => a.score - b.score)[0]
+
+        text(`${this.stepCounter} steps / ${this.episodeLength}`, 20, 60)
+        text(`${this.episodeCounter}/${this.epochLength}`, 20, 80)
+        text(`Highscore: ${highScore}`, 20, 20)
+        text(`Current Highest: ${curHighScore}`, 20, 40)
     }
 
     /** Adds topScorer to this.topScorers
@@ -130,6 +160,7 @@ class GeneticHandler {
         const m = tot / pop.length
         return m
     }
+
     startEpisode = () => {
         this.setStepCounter(0)
         this.incrementEpisodeCount()
@@ -142,8 +173,8 @@ class GeneticHandler {
     topSurvivorify = (agent) => {
         return {
             "episode": this.episodeCounter,
-            "chromosome": agent[0].chromosome,
-            "score": agent[0].score
+            "chromosome": agent.chromosome,
+            "score": agent.score
         }
     }
     /**
@@ -153,8 +184,9 @@ class GeneticHandler {
      *        means that topScorer may not be top of the batch just top of survivors
      */
     endEpisode = () => {
-        this.scoreAgents()
+        background(0)
         const survivors = this.selectionFx(this.pop)
+        // console.log(survivors)
         this.addTopScorer(this.topSurvivorify(survivors[0]))
         const nexGeneration = this.chromosomeMixingFx(survivors)
         survivors.forEach(agent => {

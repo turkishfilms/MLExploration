@@ -6,10 +6,10 @@
 
 class VectorBoltChromosome {
     constructor({
-        angMin = random(0, PI),
-        angMax = random(PI, TWO_PI),
-        angDelta = random(0, TWO_PI),
-        color = [random(255), random(255), random(255)],
+        angMin = random(TWO_PI),
+        angMax = random(TWO_PI),
+        angDelta = random(TWO_PI),
+        color = [BRIGHTNESS + random(255), BRIGHTNESS + random(255), BRIGHTNESS + random(255)],
         radius = 2 + random() * 10
     } = {}) {
         this.angMin = angMin

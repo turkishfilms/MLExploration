@@ -23,9 +23,9 @@ class VectorBolt {
         this.score = 0
     }
 
-    step = () => {
-        this.move()
-        this.show()
+    step = ({ show, move }) => {
+        if (move) this.move()
+        if (show) this.show()
     }
 
     move = () => {
@@ -57,9 +57,9 @@ class VectorBolt {
     chromosomeMix = (vectorBolt) => {
         const avg = (a, b) => (a + b) / 2
         return new VectorBoltChromosome({
-            angMin: avg(this.angMin, vectorBolt.angMin),
-            angMax: avg(this.angMax, vectorBolt.angMax),
-            angDelta: avg(this.angDelta, vectorBolt.angDelta),
+            angMin: avg(this.chromosome.angMin, vectorBolt.chromosome.angMin),
+            angMax: avg(this.chromosome.angMax, vectorBolt.chromosome.angMax),
+            angDelta: avg(this.chromosome.angDelta, vectorBolt.chromosome.angDelta),
         })
     }
 }
