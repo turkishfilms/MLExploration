@@ -58,12 +58,23 @@ class GeneticHandler {
                     return mixedAgents
                 },
             },
-            final: { boog: () => console.log("BOOOOOOG"), }
+            final: { boog: () => console.log("BOOOOOOG"), },
+            geneMixing: {
+                avg: (a, b) => {
+                    const avgg = (a, b) => (a + b) / 2
+                    const newGene = {}
+                    genes = Object.keys(this.chromosomeType)
+                    genes.forEach(gene => {
+                        newGene[gene] = avgg(a.gene, b.gene)
+                    })
+                    return new this.chromosomeType(newGene)
+                }
+            }
         }
         this.selectionFx = selectionFx || this.builtInFxs.selection.topHalf /**@issue how will a user access the builtins when making a new instance */
         this.scoringFx = scoringFx || this.builtInFxs.scoring.yValNeg /**@issue how will a user access the builtins when making a new instance */
-        this.chromosomeMixingFx = chromosomeMixingFx|| this.builtInFxs.chromosomeMixing.oneRandomPairEach /**@issue how will a user access the builtins when making a new instance */
-        this.finaleFx = finaleFx|| this.builtInFxs.final.boog /**@issue how will a user access the builtins when making a new instance */
+        this.chromosomeMixingFx = chromosomeMixingFx || this.builtInFxs.chromosomeMixing.oneRandomPairEach /**@issue how will a user access the builtins when making a new instance */
+        this.finaleFx = finaleFx || this.builtInFxs.final.boog /**@issue how will a user access the builtins when making a new instance */
 
 
         console.log("Welcome to GASIM1 Where we GAs you up!")
