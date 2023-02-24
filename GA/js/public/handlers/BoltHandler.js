@@ -32,7 +32,31 @@ class BoltHandler extends GeneticHandler {
             scoringFx: fxs.scoringFx,
             chromosomeMixingFx: fxs.chromosomeMixingFx,
             finaleFx: fxs.finaleFx,
+            
         })
-        
+        this.stepCustomFx = stepCustomFx
+    }
+
+    // this.drawLines()
+        // this.displayStats()
+
+        //bolt specific functions
+    drawLines = () => {
+        stroke(255, 0, 0)
+        this.drawMaxScoreLine()
+        stroke(0, 0, 255)
+        this.drawCurrentLeaderLine()
+        noStroke()
+    }
+
+    drawMaxScoreLine = () => {
+        let y = 0
+        if (this.topScorers.length != 0) y = this.topScorers.sort((a, b) => b.score - a.score)[0].score
+        line(0, y, width, y)
+    }
+
+    drawCurrentLeaderLine = () => {
+        const y = this.pop.sort((a, b) => a.y - b.y)[0].y
+        line(0, y, width, y)
     }
 }

@@ -69,16 +69,23 @@ class GeneticHandler {
                     })
                     return new this.chromosomeType(newGene)
                 }
+            },
+            stats: {
+                mean: (pop) => {
+                    let tot = 0
+                    pop.forEach(a => tot += a.score)
+                    const m = tot / pop.length
+                    return m
+                }
             }
         }
         this.selectionFx = selectionFx || this.builtInFxs.selection.topHalf /**@issue how will a user access the builtins when making a new instance */
         this.scoringFx = scoringFx || this.builtInFxs.scoring.yValNeg /**@issue how will a user access the builtins when making a new instance */
         this.chromosomeMixingFx = chromosomeMixingFx || this.builtInFxs.chromosomeMixing.oneRandomPairEach /**@issue how will a user access the builtins when making a new instance */
         this.finaleFx = finaleFx || this.builtInFxs.final.boog /**@issue how will a user access the builtins when making a new instance */
-
+        this.stepFx = 0
 
         console.log("Welcome to GASIM1 Where we GAs you up!")
-        console.log(pop)
         if (pop.length < 1) this.initPop(hull)
     }
 
@@ -86,7 +93,7 @@ class GeneticHandler {
     /**
      * Initalizes population (pop)
      * @function
-     * 
+     * @desc fills this.pop with default this.hull() agents
      */
     initPop = () => {
         for (let i = 0; i < this.popSize; i++) this.addAgent(new this.hull())
@@ -94,7 +101,7 @@ class GeneticHandler {
 
     /**
      * Accessor for this.pop
-     * @param {chromosomeType} agent The new agent to be added 
+     * @param {hull} agent The new agent to be added 
      * 
      */
     addAgent = (agent) => this.pop.push(agent)
@@ -107,8 +114,6 @@ class GeneticHandler {
         this.pop.forEach(agent => agent.step(should))
         this.scoreAgents()
         this.handleCount()
-        this.drawLines()
-        this.displayStats()
     }
 
     handleCount = () => {
@@ -120,24 +125,6 @@ class GeneticHandler {
         }
     }
 
-    drawLines = () => {
-        stroke(255, 0, 0)
-        this.drawMaxScoreLine()
-        stroke(0, 0, 255)
-        this.drawCurrentLeaderLine()
-        noStroke()
-    }
-
-    drawMaxScoreLine = () => {
-        let y = 0
-        if (this.topScorers.length != 0) y = this.topScorers.sort((a, b) => b.score - a.score)[0].score
-        line(0, y, width, y)
-    }
-
-    drawCurrentLeaderLine = () => {
-        const y = this.pop.sort((a, b) => a.y - b.y)[0].y
-        line(0, y, width, y)
-    }
 
     displayStats = () => {
         const curHighScore = this.pop.sort((a, b) => a.score - b.score)[0].score
@@ -157,20 +144,15 @@ class GeneticHandler {
      * @param {Number} topScorer.score - The high score achieved.
      */
     addTopScorer = (topScorer) => this.topScorers.push(topScorer)
+    setPop = (newPop) => this.pop = newPop
+    setStepCounter = (count) => this.stepCounter = count
+
     didFinishEpisode = () => this.stepCounter >= this.episodeLength
     didFinishEpoch = () => this.episodeCounter >= this.epochLength
     incrementStepCount = () => this.stepCounter++
     incrementEpisodeCount = () => this.episodeCounter++
-    setStepCounter = (count) => this.stepCounter = count
-    finale = () => console.log("BOOOOOOG")
     scoreAgents = () => this.pop.forEach(agent => this.scoringFx(agent))
-    setPop = (newPop) => this.pop = newPop
-    mean = (pop) => {
-        let tot = 0
-        pop.forEach(a => tot += a.score)
-        const m = tot / pop.length
-        return m
-    }
+
 
     startEpisode = () => {
         this.setStepCounter(0)
