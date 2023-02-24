@@ -59,3 +59,13 @@ Use regression analysis to fit a line to the stock returns and the market return
 The slope of the line represents the beta of the stock. If the slope of the line is greater than 1, the stock is more volatile than the market. If the slope of the line is less than 1, the stock is less volatile than the market.
 
 It's important to remember that beta is just one measure of risk and should be used in conjunction with other measures of risk when evaluating an investment.
+
+
+
+
+MACD VWAP RSI
+Moving Average Convergence Divergence (MACD) is calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA.
+EMAtoday = (Value Today​ ∗( Smoothing/1+Days​ ))+EMA Yesterday​ ∗(1−(Smoothing/ 1+Days​ )) smoothing = 2
+EMA = Closing price x multiplier + EMA (previous day) x (1-multiplier)
+sma
+​
