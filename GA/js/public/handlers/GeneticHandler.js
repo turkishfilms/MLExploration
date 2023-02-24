@@ -110,8 +110,8 @@ class GeneticHandler {
      * Advances the sim one step
      * Checks for episode conclusion
      */
-    step = (should) => {
-        this.pop.forEach(agent => agent.step(should))
+    step = (envData) => {
+        this.pop.forEach(agent => agent.step(envData))
         this.scoreAgents()
         this.handleCount()
     }

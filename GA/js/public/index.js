@@ -31,13 +31,8 @@ function setup() {
     // frameRate(5)
     // sim = simthree(configVecc())
     // sim = agentReplay(vecgang,configVecc())
-    sim = new GeneticHandler({
-        popSize: 100,
-        chromosomeType: VectorBoltChromosome,
-        hull: VectorBolt,
-        episodeLength: 200,
-        epochLength: 100
-    })
+    // sim = vforvector()
+    sim = new StockHandler(stockConfig())
 }
 
 const agentReplay = (agentList, ok) => {
@@ -58,6 +53,22 @@ const agentReplay = (agentList, ok) => {
         pop: winnerPop,
     })
 }
+
+const stockConfig = () =>{
+    return {
+        hey:0,
+        you:1,
+        there:2
+    }
+}
+
+const vforvector = () => new GeneticHandler({
+    popSize: 100,
+    chromosomeType: VectorBoltChromosome,
+    hull: VectorBolt,
+    episodeLength: 200,
+    epochLength: 100
+})
 
 const simthree = (con) => {
     return new GeneticHandler({
@@ -133,8 +144,6 @@ function draw() {
     background(0)
     if (unpaused) sim.step({ show: shouldShow, move: shouldMove })
 }
-
-
 
 const simtwo = () => {
 
