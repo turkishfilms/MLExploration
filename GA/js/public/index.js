@@ -29,10 +29,9 @@ function setup() {
     noStroke()
     background(0)
     // frameRate(5)
-    // sim = simthree(configVecc())
     // sim = agentReplay(vecgang,configVecc())
-    // sim = vforvector()
-    sim = new StockHandler(stockConfig())
+    sim = vforvector()
+    // sim = new StockHandler(stockConfig())
 }
 
 const agentReplay = (agentList, ok) => {
